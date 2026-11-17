@@ -41,7 +41,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "anyio", specifier = ">=4.2" }]
+requires-dist = [{ name = "anyio", specifier = ">=4.7" }]
 
 [package.metadata.requires-dev]
 dev = [

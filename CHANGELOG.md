@@ -12,8 +12,8 @@ A rewrite. **Breaking:** code written for 0.0.1 needs changes.
   `basket.APPLE`. The `enum` and `waiters` attributes are gone.
 - `is_set` is gone: check `basket.value is not None`. (It was false for a held
   member with a falsy value, such as an `IntEnum` member `0`.)
-- `pick()` raises `TypeError` for anything that is not a member of the basket's Enum
-  (0.0.1 accepted raw values), and `ValueError` for combined `Flag` values.
+- `pick()` raises `TypeError` for anything that is not a member of the basket's
+  Enum, and `ValueError` for combined `Flag` values.
 - `wait_for()` returns `None` instead of `True`, and is level-triggered: it returns
   only while the basket holds the member, not after it has moved on.
 - `wait_for_any(*members)` is implemented and returns the member the basket holds.

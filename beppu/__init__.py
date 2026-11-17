@@ -80,7 +80,7 @@ class Basket[E: Enum]:
         if member not in self._events:
             raise ValueError(
                 f"{member!r} is not a single member of {self._enum.__name__};"
-                " a basket holds one member, not a combination of Flag members"
+                " a basket over a Flag holds one non-zero member at a time"
             )
         return member
 

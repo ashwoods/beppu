@@ -62,7 +62,7 @@ running event loop.
 - `basket.clear()`: empty the basket.
 - `await basket.wait_for(member)`: return once the basket holds `member`; at once if
   it already does.
-- `await basket.wait_for_any(*members)`: return the first of `members` the basket
+- `await basket.wait_for_any(*members)`: return the member of `members` the basket
   holds, so you can `match` on it.
 
 Waiting is level-triggered: a waiter returns only if the basket still holds its

@@ -133,6 +133,25 @@ async def test_wait_for_any_returns_the_member() -> None:
 
 
 @pytest.mark.anyio
+async def test_wait_for_any_is_level_triggered() -> None:
+    basket = Basket(Fruit)
+    got: list[Fruit] = []
+
+    async def waiter() -> None:
+        got.append(await basket.wait_for_any(Fruit.APPLE, Fruit.PEAR))
+
+    async with anyio.create_task_group() as tg:
+        tg.start_soon(waiter)
+        await anyio.wait_all_tasks_blocked()
+        basket.pick(Fruit.APPLE)
+        basket.pick(Fruit.ORANGE)
+        await anyio.wait_all_tasks_blocked()
+        assert got == []
+        basket.pick(Fruit.PEAR)
+    assert got == [Fruit.PEAR]
+
+
+@pytest.mark.anyio
 async def test_wait_for_any_validates() -> None:
     basket = Basket(Fruit)
     with pytest.raises(TypeError, match="at least one member"):
