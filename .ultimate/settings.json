@@ -1,0 +1,22 @@
+{
+  "extensions": {
+    "disable": [
+      "update"
+    ]
+  },
+  "isolates": {
+    "worktree": {
+      "setup": ["sh -e .ultimate/worktree-setup.sh"]
+    }
+  },
+  "lander": {
+    "checks": [
+      [
+        { "command": "uv run --frozen ruff check", "timeout": 60 },
+        { "command": "uv run --frozen ruff format --check", "timeout": 60 },
+        { "command": "uv run --frozen pyright", "timeout": 120 }
+      ],
+      { "command": "uv run --frozen pytest", "timeout": 120 }
+    ]
+  }
+}
