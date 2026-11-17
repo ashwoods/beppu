@@ -4,7 +4,8 @@
 
 A rewrite. **Breaking:** code written for 0.0.1 needs changes.
 
-- Requires Python 3.12 or later, and runs on anyio: asyncio and trio both work.
+- Requires Python 3.12 or later. Runs on asyncio with no dependencies; install
+  `beppu[anyio]` for trio (or anyio's asyncio backend).
 - `Basket` is generic over its Enum: `Basket(Fruit)` is a `Basket[Fruit]`, and the
   package ships type information (`py.typed`).
 - `Basket(enum)` takes no `loop` argument and can be created outside a running loop.
@@ -19,6 +20,7 @@ A rewrite. **Breaking:** code written for 0.0.1 needs changes.
 - `wait_for_any(*members)` is implemented and returns the member the basket holds.
   The `wait_for_pick()` stub is removed.
 - `clear()` empties the basket; waiters for the member it held keep waiting.
+- Waits are cancellable with `asyncio.timeout()` or anyio's cancel scopes.
 - Packaging moved to `pyproject.toml` (hatchling) and uv; tox, Travis and flake8 are
   replaced by ruff, pyright and GitHub Actions.
 

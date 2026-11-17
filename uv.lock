@@ -28,12 +28,15 @@ wheels = [
 name = "beppu"
 version = "0.1.0"
 source = { editable = "." }
-dependencies = [
+
+[package.optional-dependencies]
+anyio = [
     { name = "anyio" },
 ]
 
 [package.dev-dependencies]
 dev = [
+    { name = "anyio" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },
@@ -41,10 +44,12 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "anyio", specifier = ">=4.7" }]
+requires-dist = [{ name = "anyio", marker = "extra == 'anyio'", specifier = ">=4.7" }]
+provides-extras = ["anyio"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "anyio", specifier = ">=4.7" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },

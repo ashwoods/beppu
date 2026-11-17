@@ -25,3 +25,5 @@ jobs:
       - run: uv run --frozen ruff format --check
       - run: uv run --frozen pyright
       - run: uv run --frozen pytest
+      - name: asyncio without anyio
+        run: uv run --frozen --isolated --no-dev python tests/smoke_asyncio.py

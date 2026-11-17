@@ -6,7 +6,7 @@ readme = "README.md"
 license = "MIT"
 authors = [{ name = "Ashley Camba Garrido", email = "ashwoods@gmail.com" }]
 requires-python = ">=3.12"
-dependencies = ["anyio>=4.7"]
+dependencies = []
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Framework :: AnyIO",
@@ -23,12 +23,15 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+[project.optional-dependencies]
+anyio = ["anyio>=4.7"]
+
 [project.urls]
 Homepage = "https://github.com/ashwoods/beppu"
 Changelog = "https://github.com/ashwoods/beppu/blob/master/CHANGELOG.md"
 
 [dependency-groups]
-dev = ["pyright", "pytest", "ruff", "trio"]
+dev = ["anyio>=4.7", "pyright", "pytest", "ruff", "trio"]
 
 [build-system]
 requires = ["hatchling"]

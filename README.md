@@ -1,21 +1,23 @@
 # beppu
 
 An Enum-keyed async event. A `Basket` holds at most one member of an `Enum`, and
-tasks wait until it holds the member they want. It runs on
-[anyio](https://anyio.readthedocs.io), so it works with asyncio and trio.
+tasks wait until it holds the member they want. It runs on asyncio with no
+dependencies, and on trio through [anyio](https://anyio.readthedocs.io).
 
 ```bash
-pip install beppu
+pip install beppu          # asyncio
+pip install 'beppu[anyio]'  # trio, or anyio's asyncio backend
 ```
 
-Python 3.12 or later.
+Python 3.12 or later. On trio, install the `anyio` extra: without anyio, beppu uses
+asyncio's `Event`, and trio rejects it.
 
 ## Usage
 
 ```python
+import asyncio
 from enum import Enum, auto
 
-import anyio
 from beppu import Basket
 
 
@@ -40,17 +42,20 @@ async def pedestrian(light: Basket[Light]) -> None:
 
 async def main() -> None:
     light = Basket(Light)
-    async with anyio.create_task_group() as tg:
-        tg.start_soon(car, light)
-        tg.start_soon(pedestrian, light)
-        await anyio.wait_all_tasks_blocked()
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(car(light))
+        tg.create_task(pedestrian(light))
+        await asyncio.sleep(0)
         light.pick(Light.RED)  # the pedestrian crosses
-        await anyio.wait_all_tasks_blocked()
+        await asyncio.sleep(0)
         light.pick(Light.GREEN)  # the car goes
 
 
-anyio.run(main)
+asyncio.run(main())
 ```
+
+With the `anyio` extra, the same code written with `anyio.create_task_group()` and
+`anyio.run(main, backend="trio")` runs on trio.
 
 ## API
 
@@ -75,9 +80,12 @@ Members are checked: anything that is not a member of the basket's `Enum` raises
 
 ### Timeouts
 
-Waits have no timeout argument; use anyio's cancel scopes:
+Waits have no timeout argument; use `asyncio.timeout()`, or anyio's cancel scopes:
 
 ```python
+async with asyncio.timeout(5):  # raises TimeoutError
+    await light.wait_for(Light.GREEN)
+
 with anyio.move_on_after(5):
     await light.wait_for(Light.GREEN)
 
@@ -92,4 +100,9 @@ uv sync
 uv run ruff check && uv run ruff format --check && uv run pyright && uv run pytest
 ```
 
-Tests run on both asyncio and trio.
+Tests run on asyncio and trio through anyio, and on asyncio with beppu's anyio-free
+fallback. CI also runs `tests/smoke_asyncio.py` in an environment without anyio:
+
+```bash
+uv run --isolated --no-dev python tests/smoke_asyncio.py
+```
